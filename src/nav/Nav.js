@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 
-import 'mdi/css/materialdesignicons.min.css';
-
 
 class Nav extends Component {
     render() {

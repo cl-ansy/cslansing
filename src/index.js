@@ -7,10 +7,7 @@ import Home from './home/Home';
 import Notebook from './notebook/Notebook';
 
 import './index.css';
-
-// Vendors
-import 'materialize-css/dist/css/materialize.min.css';
-import 'materialize-css/dist/js/materialize.min.js';
+import './vendors.js';
 
 
 render((
