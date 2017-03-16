@@ -2,11 +2,50 @@ import React, { Component } from 'react';
 import * as PIXI from 'pixi.js';
 
 
-// const WIDTH = Math.min(maxRes.x, window.innerWidth);
-// const HEIGHT = Math.min(maxRes.y, window.innerHeight);
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-// const ASSETS_URL = `${process.env.PUBLIC_URL}/assets/`;
+
+class Particle {
+    constructor() {
+        // const texture = PIXI.Texture.fromImage('https://s3-us-west-2.amazonaws.com/s.cdpn.io/53148/rp-0.png?123');
+        const texture = PIXI.Texture.fromImage('https://i1.wp.com/freepngimages.com/wp-content/uploads/2014/04/wasp_2.png?fit=220%2C220');
+        this.sprite = new PIXI.Sprite(texture);
+        this.sprite.scale.x = 0.4;
+        this.sprite.scale.y = 0.4;
+        this.offset = { x: Math.random() * 300, y: Math.random() * 300 };
+        this.velocity = { x: 0, y: 0 };
+    }
+
+    setPosition(pos) {
+        this.sprite.position.x = pos.x;
+        this.sprite.position.y = pos.y;
+    }
+
+    setVelocity(vel) {
+        this.velocity = vel;
+    }
+
+    update(mousePos) {
+        const w = this.sprite.width / 2;
+        const h = this.sprite.height / 2;
+        if (mousePos) {
+            this.sprite.position.x = mousePos.x - 20 - this.offset.x;
+            // this.sprite.position.x = mousePos.x - w;
+            this.sprite.position.y = mousePos.y - 20 - this.offset.y;
+            return;
+        }
+
+        if (this.sprite.position.x-w > WIDTH || this.sprite.position.x+w < 0) {
+            this.velocity.x = -this.velocity.x;
+        }
+        if (this.sprite.position.y-h > HEIGHT || this.sprite.position.y+h < 0) {
+            this.velocity.y = -this.velocity.y;
+        }
+
+        this.sprite.position.x += this.velocity.x;
+        this.sprite.position.y += this.velocity.y;
+    }
+}
 
 class Canvas extends Component {
     componentDidMount() {
@@ -21,7 +60,7 @@ class Canvas extends Component {
 
     createRenderer() {
         let renderer = this.renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
-        renderer.backgroundColor = 0x111111;
+        renderer.backgroundColor = 0xFFFFFF;
         renderer.view.style.position = 'absolute';
         renderer.view.style.display = 'block';
         renderer.autoResize = true;
@@ -51,13 +90,28 @@ class Canvas extends Component {
         // );
         // this.stage.addChild(this.cat);
 
+        this.launchBees();
         this.renderer.render(this.stage);
         requestAnimationFrame(this.update);
     }
 
     update = () => {
         this.renderer.render(this.stage);
+        for (var i = this.bees.length - 1; i >= 0; i--) {
+            this.bees[i].update(this.mousePos);
+        }
         this.frame = requestAnimationFrame(this.update);
+    }
+
+    launchBees() {
+        this.bees = [];
+        for (var i = 0; i < 100; i++) {
+            let bee = this.bees[i] = new Particle();
+            bee.setPosition({ x: Math.random() * WIDTH, y: Math.random() * HEIGHT });
+            var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+            bee.setVelocity({ x: plusOrMinus, y: plusOrMinus });
+            this.stage.addChild(bee.sprite)
+        }
     }
 
     controls() {
@@ -136,11 +190,10 @@ class Canvas extends Component {
             <div
                 ref={el => { this.container = el; }}
                 className="PIXI-container"
-                width={WIDTH}
-                height={HEIGHT}
                 onMouseDown={this.handleMouseDown.bind(this)}
                 onMouseMove={this.handleMouseMove.bind(this)}
                 onMouseUp={this.handleMouseUp.bind(this)}
+                onMouseLeave={this.handleBlur.bind(this)}
                 style={{
                     position: 'fixed',
                     width: `${WIDTH}px`,
@@ -158,6 +211,10 @@ class Canvas extends Component {
     }
 
     handleMouseMove(event) {
+        this.mousePos = {
+            x: event.clientX,
+            y: event.clientY
+        };
         // if (this.points) {
         //     this.points.push(event.clientX);
         //     this.points.push(event.clientY);
@@ -167,6 +224,10 @@ class Canvas extends Component {
 
     handleMouseUp() {
         // this.points = undefined;
+    }
+
+    handleBlur() {
+        this.mousePos = null;
     }
 }
 
