@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import * as PIXI from 'pixi.js';
 
-const maxRes = {
-    x: 1024,
-    y: 768
-};
-const WIDTH = Math.min(maxRes.x, window.innerWidth);
-const HEIGHT = Math.min(maxRes.y, window.innerHeight);
+
+// const WIDTH = Math.min(maxRes.x, window.innerWidth);
+// const HEIGHT = Math.min(maxRes.y, window.innerHeight);
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 // const ASSETS_URL = `${process.env.PUBLIC_URL}/assets/`;
 
 class Canvas extends Component {
@@ -142,27 +141,32 @@ class Canvas extends Component {
                 onMouseDown={this.handleMouseDown.bind(this)}
                 onMouseMove={this.handleMouseMove.bind(this)}
                 onMouseUp={this.handleMouseUp.bind(this)}
+                style={{
+                    position: 'fixed',
+                    width: `${WIDTH}px`,
+                    height: `${HEIGHT}px`
+                }}
             />
         );
     }
 
     handleMouseDown(event) {
-        this.line = new PIXI.Graphics();
-        this.line.lineStyle(2, 0xFFFFFF, 1);
-        this.stage.addChild(this.line);
-        this.points = [event.clientX, event.clientY];
+        // this.line = new PIXI.Graphics();
+        // this.line.lineStyle(2, 0xFFFFFF, 1);
+        // this.stage.addChild(this.line);
+        // this.points = [event.clientX, event.clientY];
     }
 
     handleMouseMove(event) {
-        if (this.points) {
-            this.points.push(event.clientX);
-            this.points.push(event.clientY);
-            this.line.drawPolygon(this.points)
-        }
+        // if (this.points) {
+        //     this.points.push(event.clientX);
+        //     this.points.push(event.clientY);
+        //     this.line.drawPolygon(this.points)
+        // }
     }
 
     handleMouseUp() {
-        this.points = undefined;
+        // this.points = undefined;
     }
 }
 

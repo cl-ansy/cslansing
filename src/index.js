@@ -6,7 +6,6 @@ import App from './app/App';
 import Home from './home/Home';
 import Notebook from './notebook/Notebook';
 
-import './index.css';
 import './vendors.js';
 
 

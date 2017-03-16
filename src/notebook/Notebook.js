@@ -8,7 +8,7 @@ import './Notebook.css';
 class Notebook extends Component {
     render() {
         return (
-            <div className="Notebook">
+            <div className="notebook-container">
                 <Canvas />
             </div>
         );
